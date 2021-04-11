@@ -1,0 +1,87 @@
+#!/usr/bin/perl -w
+use strict;
+  
+#First to count the characteristic value of varant type in each chromosome, we initialize an output file called 'Output.txt', and print header (we include 6 columns titled: 'chromosome', 'SV Type', 'Total', 'Mean read count', 'Mean score', and 'Mean size')to the file you create.
+my $output = "Output.txt";
+open OU, ">$output";
+print OU "chromosome\tSV type\tTotal\tMean read count\tMean score\tMean size\n";
+
+#Define count variable
+my $count;
+
+#Define array and transfer the files into this array
+open $count, '<', "$ARGV[0]";
+my @array = <$count>;
+
+#Setup a for loop to loop through the individual chromosome files and make sure whether all the files exists in current directory, if not, an error message will be printed.
+for my $i (@array){
+	chomp $i;
+	if (-e $i){
+
+        } else {
+
+                print "ERROR, $i file do not exist\n";
+        }
+}
+
+
+#Setup a for loop to calculate the information of each chromosome. The first operation inside of loop is to extract each file name from the list of files,once we have successfully extracted the filename, perform a sanity check to ensure that each file exists and is not empty. If any files do not exist or are empty, an error message will be printed and abort the script.
+for my $i (@array){
+	chomp $i;
+	my %total;
+	my %mean_read_count;
+	my %mean_score;
+	my %mean_size;
+	my $file = $i;
+	open IN, $file or die "lacking $file file\n";
+	while (<IN>){
+		chomp;
+		if ($_ =~ /^#/){next;}
+		my @array_info = split /\t/,$_;
+
+#Perform four main calculations per chromosome for each type of structural variant. First, isolate the infomation in the correct column that specifies the type of SV in the input file. Then use regular expressions to separate the five possible types (SVs, INS, DEL, INV, ITX/CTX)of SVs in this datafile.
+		if ($array_info[6] =~ /((INS|DEL|INV|ITX|CTX))/){
+			my $SV_type = $1;
+			if (exists $total{$SV_type}){
+				$total{$SV_type} += 1;
+
+			} else {
+
+				$total{$SV_type} = 1;
+
+			}
+
+			if (exists $mean_read_count{$SV_type}){
+
+				$mean_read_count{$SV_type} += $array_info[9];
+			} else {
+
+				$mean_read_count{$SV_type} = $array_info[9];
+
+			}
+				
+ 	         	if (exists $mean_score{$SV_type}){
+
+                                $mean_score{$SV_type} += $array_info[8];
+                        } else {
+
+                                $mean_score{$SV_type} = $array_info[8];
+
+                        }
+
+			my $size = $array_info[1] - $array_info[4];
+			if ($size < 0){ $size = -$size;}
+			if (exists $mean_size{$SV_type}){
+				$mean_size{$SV_type} += $size;
+				
+			} else {
+
+
+				$mean_size{$SV_type} = 0;
+			}
+			
+
+		}	
+	
+
+	}
