@@ -85,3 +85,37 @@ for my $i (@array){
 	
 
 	}
+
+#make the script to sleep 3 second so that output could write into the memory of linux, otherwise, the next step could not read this summary correctlly. 
+`sleep 3`;
+
+#calculate the information of all the chromosome. Store four calculations in variables so that we can print them to the output file we made above. 
+my $total_sum = 0;
+my $read_sum = 0;
+my $score_sum =0;
+my $size_sum = 0;
+my $line_sum =0;
+
+my $input = "Output.txt";
+open Caculate, $input;
+while (<Caculate>){
+	chomp;
+	if (/^chr/){next;}
+	my @all = split /\s+/,$_;
+	$line_sum += 1;
+	$total_sum += $all[2];
+	$read_sum += $all[3];	
+	$score_sum += $all[4];
+	$size_sum += $all[5];	
+}
+
+#print "$read_sum\t$total\t$score_sum\t$size_sum\n";
+
+my $all_mean_total = $total_sum/$line_sum;
+my $all_mean_read = $read_sum/$line_sum;
+my $all_socre = $score_sum/$line_sum;
+my $all_size = $size_sum/$line_sum;
+
+
+print OU "All\tALL\t$all_mean_total\t$all_mean_read\t$all_socre\t$all_size\n";
+close OU;
