@@ -39,7 +39,7 @@ for my $i (@array){
 		if ($_ =~ /^#/){next;}
 		my @array_info = split /\t/,$_;
 
-#Perform four main calculations per chromosome for each type of structural variant. First, isolate the infomation in the correct column that specifies the type of SV in the input file. Then use regular expressions to separate the five possible types (SVs, INS, DEL, INV, ITX/CTX)of SVs in this datafile.
+#Perform four main calculations per chromosome for each type of structural variant. First, isolate the infomation in the correct column that specifies the type of SV in the input file. Then use regular expressions to separate the five possible types (SVs, INS, DEL, INV, ITX/CTX)of SVs in this datafile. Finally, get the statistics information of variation number, supporting supporting reads, mean score and mean size of each SV types.
 		if ($array_info[6] =~ /((INS|DEL|INV|ITX|CTX))/){
 			my $SV_type = $1;
 			if (exists $total{$SV_type}){
